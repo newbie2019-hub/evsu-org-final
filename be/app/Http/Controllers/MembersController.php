@@ -41,6 +41,7 @@ class MembersController extends Controller
                 $query->where('organization_id', auth()->user()->userinfo->organization_id)->where('type', 'member');
             })->where('id', '<>', auth()->user()->id)->where('account_status', 'approved')->paginate(8));
     }
+
     public function admins()
     {
         return response()->json(User::with([
@@ -49,7 +50,34 @@ class MembersController extends Controller
             'userinfo.organization:id,organization'
             ])->whereHas('userinfo', function($query){
                 $query->where('organization_id', auth()->user()->userinfo->organization_id)->where('type', 'admin');
-            })->where('id', '<>', auth()->user()->id)->where('account_status', 'approved')->paginate(8));
+            })->where('id', '<>', auth()->user()->id)->where('account_status', 'approved')->paginate(10));
+
+    }
+
+    public function chatUsers()
+    {
+        if(auth()->user()->userinfo->type == 'admin'){
+            return response()->json(User::with([
+                'userinfo', 
+                'userinfo.section:id,section,year_level', 
+                'userinfo.organization:id,organization'
+                ])->withCount(['senderMessages' => function($query){
+                    $query->where('status', 'unseen');
+                }])->whereHas('userinfo', function($query){
+                    $query->where('organization_id', auth()->user()->userinfo->organization_id)->where('type', 'member');
+                })->where('id', '<>', auth()->user()->id)->where('account_status', 'approved')->get());
+        }
+        else {
+            return response()->json(User::with([
+                'userinfo', 
+                'userinfo.section:id,section,year_level', 
+                'userinfo.organization:id,organization'
+                ])->withCount(['senderMessages' => function($query){
+                    $query->where('status', 'unseen');
+                }])->whereHas('userinfo', function($query){
+                    $query->where('organization_id', auth()->user()->userinfo->organization_id)->where('type', 'admin');
+                })->where('id', '<>', auth()->user()->id)->where('account_status', 'approved')->get());
+        }
     }
     
     public function pendingMembers()

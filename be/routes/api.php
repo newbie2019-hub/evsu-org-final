@@ -74,6 +74,7 @@ Route::group(['middleware' => 'api'], function (){
         Route::get('members/all', [MembersController::class, 'showall']);
         Route::get('pendingmembers', [MembersController::class, 'pendingMembers']);
         Route::get('admins', [MembersController::class, 'allAdmins']);
+        Route::get('chatusers', [MembersController::class, 'chatUsers']);
         Route::get('orgadmins', [MembersController::class, 'admins']);
         Route::apiResource('members', MembersController::class);
         Route::put('approve/{id}', [MembersController::class, 'approveMember']);

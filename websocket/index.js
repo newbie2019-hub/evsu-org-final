@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: 'http://147.182.237.55:3000', //CHANGE THIS ORIGIN TO THE URL WHERE IT WAS DEPLOYED
+        origin: 'http://localhost:8081', //CHANGE THIS ORIGIN TO THE URL WHERE IT WAS DEPLOYED
         methods: ['GET', 'POST'],
     },
 });

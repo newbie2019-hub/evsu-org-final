@@ -16,6 +16,14 @@ class ChatController extends Controller
     public function messages(Request $request)
     {
         $conversations = Conversation::with(['sender', 'messages'])->where('receiver_id', $request->receiver_id)->orWhere('sender_id', $request->receiver_id)->first();
+        if(!empty($conversations->messages)){
+            foreach($conversations->messages as $msg){
+                if($msg->receiver_id == auth()->user()->id){
+                    $msg->update(['status' => 'seen']);
+                }
+            }
+        }
+        
         return response()->json($conversations);
     }
     // public function index()

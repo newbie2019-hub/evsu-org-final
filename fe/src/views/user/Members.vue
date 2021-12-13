@@ -7,7 +7,7 @@
     <div class="col-12 col-sm-11 col-md-12 col-lg-11 col-xl-11 mt-4">
      <div class="card p-5">
       <div class="d-flex justify-content-end">
-       <button v-if="user.userinfo.type == 'admin'" class="btn btn-primary" v-on:click.prevent="$bvModal.show('addMemberModal')"><i class="bi bi-node-plus me-2"></i>Add Member</button>
+       <button v-if="user.userinfo && user.userinfo.type == 'admin'" class="btn btn-primary" v-on:click.prevent="$bvModal.show('addMemberModal')"><i class="bi bi-node-plus me-2"></i>Add Member</button>
       </div>
       <h5 class="text-center" v-if="admins.data.length == 0">No member found</h5>
       <div class="table-responsive mt-4" v-if="admins.data.length > 0">

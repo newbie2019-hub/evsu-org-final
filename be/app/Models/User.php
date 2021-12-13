@@ -27,6 +27,14 @@ class User extends Authenticatable implements JWTSubject
         'image'
     ];
 
+    public function receiverMessages(){
+        return $this->hasMany(Messages::class, 'receiver_id', 'id');
+    }
+
+    public function senderMessages(){
+        return $this->hasMany(Messages::class, 'sender_id', 'id');
+    }
+
     public function userinfo(){
         return $this->belongsTo(UserInfo::class, 'user_info_id', 'id');
     }

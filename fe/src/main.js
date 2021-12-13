@@ -12,7 +12,7 @@ import VueSocketIOExt from 'vue-socket.io-extended';
 import { io } from 'socket.io-client';
 
 //SOCKETIO SERVER URL
-const socket = io('http://147.182.237.55');
+const socket = io('http://localhost:3000');
 
 Vue.use(VueSocketIOExt, socket);
 Vue.use(BootstrapVue);

@@ -8,6 +8,7 @@ export default {
         admins: [],
         pending_members: [],
         messages: [],
+        chatusers: [],
     },
     getters: {},
     mutations: {
@@ -16,6 +17,9 @@ export default {
         },
         SET_MEMBERS(state, data) {
             state.members = data;
+        },
+        SET_CHAT_USERS(state, data) {
+            state.chatusers = data;
         },
         SET_ADMINS(state, data) {
             state.admins = data;
@@ -64,6 +68,18 @@ export default {
             const res = await API.get(`/user/orgadmins`)
                 .then((res) => {
                     commit('SET_ADMINS', res.data);
+                    return res;
+                })
+                .catch((err) => {
+                    return err.response;
+                });
+
+            return res;
+        },
+        async chatUsers({ commit }) {
+            const res = await API.get(`/user/chatusers`)
+                .then((res) => {
+                    commit('SET_CHAT_USERS', res.data);
                     return res;
                 })
                 .catch((err) => {

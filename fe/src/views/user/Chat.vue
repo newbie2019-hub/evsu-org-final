@@ -9,7 +9,26 @@
     <div class="row pe-5 ps-3 g-0 mt-3">
         <div class="users-list col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 p-4">
             <h6 class="mb-3">Conversations</h6>
-            <li v-on:click.prevent="setRecipient(stud.id)" :class="data.receiver_id == stud.id ? 'recipient-active' : ''" class="cursor-pointer text-dark mt-1 fs-6" v-for="(stud, i) in admins" :key="i" :value="stud.id"> <avatar class="me-2" :username="stud.userinfo.first_name + ' ' + stud.userinfo.last_name" :rounded="true" :size="30" :color="'#fff'" :lighten="100"></avatar>{{stud.userinfo.first_name}} {{stud.userinfo.last_name}}</li>
+            <li v-on:click.prevent="setRecipient(stud.id)" :class="data.receiver_id == stud.id ? 'recipient-active' : ''" class="cursor-pointer text-dark mt-1 fs-6" v-for="(stud, i) in chatusers" :key="i" :value="stud.id"> 
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <avatar class="me-2" :username="stud.userinfo.first_name + ' ' + stud.userinfo.last_name" :rounded="true" :size="30" :color="'#fff'" :lighten="100"></avatar>
+                        <div class="lh-0">
+                            {{stud.userinfo.first_name}} {{stud.userinfo.last_name}}
+                        </div>
+                    </div>
+                    <div class="ms-5" v-if="stud.sender_messages_count">
+                        <b-badge class="bg-success rounded-pill">
+                            {{stud.sender_messages_count}}
+                        </b-badge>
+                    </div>
+                    <div class="ms-5" v-else>
+                        <b-badge class="bg-success rounded-pill">
+                            {{stud.receiver_messages_count}}
+                        </b-badge>
+                    </div>
+                </div>
+            </li>
         </div>
         <div class="col-12 col-sm-12 col-md-9 col-lg-9 col-xl-9">
         <div class="card p-0">
@@ -71,25 +90,28 @@ export default {
  async mounted() {
   this.listener()
   await this.$store.dispatch('auth/checkUser')
-  await this.$store.dispatch('members/allAdmins')
+  await this.$store.dispatch('members/chatUsers')
   this.scrollToBottom()
   document.title = 'Chat Section'
  },
  computed: {
     ...mapState('auth', ['user']),
-    ...mapState('members', ['admins', 'messages']),
+    ...mapState('members', ['admins', 'messages', 'chatusers']),
  },
  methods: {
      scrollToBottom(){
-         const chatbox = document.getElementById('message-container');
-         chatbox.scrollTop = chatbox.scrollHeight
+        const chatbox = document.getElementById('message-container');
+        chatbox.scrollTop = chatbox.scrollHeight
      },
      listener(){
         this.$socket.client.on('message_sent', this.getCurrentMsg);
      },
      async getCurrentMsg(){
-        await this.$store.dispatch('members/requestMessages', this.data);
-        this.scrollToBottom()
+         await this.$store.dispatch('members/chatUsers')
+        if(this.data.receiver_id){
+            await this.$store.dispatch('members/requestMessages', this.data);
+            this.scrollToBottom()
+        }
      },
      async sendMessage(){
       if(this.data.receiver_id == '') return this.$toast.error('Recepient required')

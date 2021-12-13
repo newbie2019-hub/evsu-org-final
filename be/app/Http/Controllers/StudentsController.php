@@ -44,13 +44,25 @@ class StudentsController extends Controller
     }
     public function admins()
     {
-        return response()->json(User::with([
-            'userinfo', 
-            'userinfo.section:id,section,year_level', 
-            'userinfo.organization:id,organization'
-            ])->whereHas('userinfo', function($query){
-                $query->where('type', 'admin');
-            })->where('account_status', 'approved')->paginate(8));
+        if(auth()->user()->userinfo->type == 'admin'){
+            return response()->json(User::with([
+                'userinfo', 
+                'userinfo.section:id,section,year_level', 
+                'userinfo.organization:id,organization'
+                ])->whereHas('userinfo', function($query){
+                    $query->where('type', 'admin');
+                })->where('account_status', 'approved')->paginate(8));
+            }
+            else {
+                return response()->json(User::with([
+                    'userinfo', 
+                    'userinfo.section:id,section,year_level', 
+                    'userinfo.organization:id,organization'
+                    ])->whereHas('userinfo', function($query){
+                        $query->where('type', 'admin');
+                    })->where('account_status', 'approved')->paginate(8));
+
+        }
     }
 
     /**

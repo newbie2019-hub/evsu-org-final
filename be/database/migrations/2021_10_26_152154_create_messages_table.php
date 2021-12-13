@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
             $table->foreignId('conversation_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
+            $table->string('status')->default('unseen');
             $table->longText('content');
             $table->timestamps();
         });
